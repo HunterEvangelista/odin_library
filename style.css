@@ -1,3 +1,42 @@
 :root {
     font-family: 'DM Sans', sans-serif;
+    color: #155e75;
+}
+
+.header {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: baseline;
+    padding-left: 1rem;
+    padding-right: 1rem;
+    padding-bottom: 0;
+}
+
+.header > * {
+    margin-bottom: .25rem;
+}
+
+.add-book {
+    color: white;
+    background-color: #38bdf8;
+    border-radius: .25rem;
+    padding: .3rem;
+    cursor: pointer;
+}
+
+.library-container {
+    display: grid;
+    grid-template-rows: 2rem;
+    grid-auto-rows: 2rem;
+}
+
+.col-labels {
+    display: grid;
+    grid-template-columns: 3fr 2fr repeat(3, 1fr);
+    font-size: 1.25rem;
+    border-top: 1px solid #f472b6;
+    border-bottom: 1px solid #f472b6;
+    vertical-align: center;
+    text-align: center;
 }
