@@ -19,16 +19,22 @@ function Book(title, author, pages, read) {
   };
 }
 
-function closeModal() {
-  addBookModal.classList.toggle("show");
-  body.removeEventListener("click", closeModal);
-  console.log(addBookModal.classList);
+function closeModal(e) {
+  console.log(e);
+  if (
+    e.target.className === "header" ||
+    e.target.className === "library-container" ||
+    e.target.parentElement === null ||
+    e.target.className === "add-book-button"
+  ) {
+    addBookModal.classList.toggle("show");
+    window.removeEventListener("click", closeModal);
+  }
 }
 
 function openModal() {
   addBookModal.classList.toggle("show");
-//   body.addEventListener("click", closeModal);
-  console.log(addBookModal.classList);
+  window.addEventListener("click", closeModal);
 }
 
 addBookButton.addEventListener("click", openModal);
