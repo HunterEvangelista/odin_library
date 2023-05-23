@@ -12,9 +12,8 @@ const titleInput = document.querySelector("#title");
 const authorInput = document.querySelector("#author");
 const pageInput = document.querySelector("#pages");
 const readInput = document.querySelector("#read");
+const libraryContainer = document.querySelector(".library-container");
 const book = [];
-
-console.log(readInput.checked);
 
 // can handle new books by creating an empty array
 // each time a book is created by the user add the object to the array
@@ -25,10 +24,11 @@ function Book(title, author, pages, read) {
   this.title = title;
   this.author = author;
   this.pages = pages;
-  this.read = read;
-  this.info = function info() {
-    return `$[title], $[author], $[pages], $[read]`;
-  };
+  if (read) {
+    this.read = "Read";
+  } else {
+    this.read = "Unread";
+  }
 }
 
 function closeModal(e) {
@@ -55,21 +55,32 @@ function resetInputs() {
   readInput.checked = false;
 }
 
+let functionVar = "";
+function updateDOM(newBook) {
+  functionVar = document.createElement("div");
+  functionVar.setAttribute("id", `${newBook.title}`);
+  let localVar = "";
+  // eslint-disable-next-line no-restricted-syntax
+  for (const property in newBook) {
+    if (Object.hasOwn(newBook, property)) {
+      localVar = document.createElement("span");
+      localVar.innerHTML = `${newBook[property]}`;
+      functionVar.appendChild(localVar);
+    }
+  }
+  libraryContainer.appendChild(functionVar);
+}
+
 function addBook() {
-  //   book.push(
-  //     new Book(
-  //       titleInput.value,
-  //       authorInput.value,
-  //       pageInput.value,
-  //       readInput.checked
-  //     )
-  //   );
-  console.log(
-    titleInput.value,
-    authorInput.value,
-    pageInput.value,
-    readInput.checked
+  book.push(
+    new Book(
+      titleInput.value,
+      authorInput.value,
+      pageInput.value,
+      readInput.checked
+    )
   );
+  updateDOM(book[book.length - 1]);
   resetInputs();
 }
 
