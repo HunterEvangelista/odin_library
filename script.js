@@ -56,18 +56,25 @@ function resetInputs() {
 }
 
 let functionVar = "";
+let newBookVar = "";
 function updateDOM(newBook) {
   functionVar = document.createElement("div");
   functionVar.setAttribute("id", `${newBook.title}`);
-  let localVar = "";
+  functionVar.setAttribute("class", "book");
+  newBookVar = "";
   // eslint-disable-next-line no-restricted-syntax
   for (const property in newBook) {
     if (Object.hasOwn(newBook, property)) {
-      localVar = document.createElement("span");
-      localVar.innerHTML = `${newBook[property]}`;
-      functionVar.appendChild(localVar);
+      newBookVar = document.createElement("span");
+      newBookVar.innerHTML = `${newBook[property]}`;
+      functionVar.appendChild(newBookVar);
     }
   }
+  // add the remove book button
+  newBookVar = document.createElement("span");
+  newBookVar.innerHTML = "remove";
+  functionVar.appendChild(newBookVar);
+  console.log(functionVar);
   libraryContainer.appendChild(functionVar);
 }
 
