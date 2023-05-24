@@ -1,6 +1,8 @@
 :root {
     font-family: 'DM Sans', sans-serif;
     color: #155e75;
+    padding-left: 1rem;
+    padding-right: 1rem;
 }
 
 .header {
@@ -11,6 +13,7 @@
     padding-left: 1rem;
     padding-right: 1rem;
     padding-bottom: 0;
+    background-color: white;
 }
 
 .header > * {
@@ -48,7 +51,7 @@
     display: flex;
     position: fixed;
     top: 25%;
-    right: 32rem;
+    right: 35%;
     z-index: 9999;
     flex-direction: column;
     justify-content: center;
@@ -107,8 +110,18 @@
 .library-container > div {
     display: grid;
     grid-template-columns: 3fr 2fr repeat(3, 1fr);
-    vertical-align: center;
+    vertical-align: bottom;
     text-align: center;
     /* margin: .25rem; */
     font-size: 1.25rem;
+}
+
+#remove {
+    background-color: #f472b6;
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: .25rem;
+    cursor: pointer;
 }

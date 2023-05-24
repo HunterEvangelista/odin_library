@@ -1,10 +1,3 @@
-// define book constructor
-// allow it to take arguments from the console
-// format page to allow rows of books
-// connect the constructor to a form on the page
-// could also maybe use regular text input and innerHTML
-// add attribute that changes based on read or not read
-
 const addBookButton = document.querySelector(".add-book");
 const addBookModal = document.querySelector(".new-book-modal");
 const submitBookButton = document.querySelector(".add-book-button");
@@ -14,11 +7,8 @@ const pageInput = document.querySelector("#pages");
 const readInput = document.querySelector("#read");
 const libraryContainer = document.querySelector(".library-container");
 const book = [];
-
-// can handle new books by creating an empty array
-// each time a book is created by the user add the object to the array
-// user adds book > triggers constructor > book is appended into list
-// call other function that iterates through each book and adds to dom
+let targetBook = "";
+const readSpan = "";
 
 function Book(title, author, pages, read) {
   this.title = title;
@@ -55,6 +45,16 @@ function resetInputs() {
   readInput.checked = false;
 }
 
+function removeBook(e) {
+  targetBook = document.querySelector(`div.book#${e.target.parentNode.id}`);
+  libraryContainer.removeChild(targetBook);
+}
+
+function readStatus(e) {
+  // document.querySelector(`span.${e.target.class}`)
+  console.log(e.target);
+}
+
 let functionVar = "";
 let newBookVar = "";
 function updateDOM(newBook) {
@@ -65,16 +65,18 @@ function updateDOM(newBook) {
   // eslint-disable-next-line no-restricted-syntax
   for (const property in newBook) {
     if (Object.hasOwn(newBook, property)) {
-      newBookVar = document.createElement("span");
+      newBookVar = document.createElement("div");
       newBookVar.innerHTML = `${newBook[property]}`;
+      newBookVar.setAttribute("id", `${newBook.title}`);
+      newBookVar.setAttribute("class", `${newBook[property]}`);
       functionVar.appendChild(newBookVar);
     }
   }
-  // add the remove book button
-  newBookVar = document.createElement("span");
-  newBookVar.innerHTML = "remove";
+  newBookVar = document.createElement("div");
+  newBookVar.innerHTML = "Remove";
+  newBookVar.setAttribute("id", "remove");
+  newBookVar.addEventListener("click", removeBook);
   functionVar.appendChild(newBookVar);
-  console.log(functionVar);
   libraryContainer.appendChild(functionVar);
 }
 
