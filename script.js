@@ -8,7 +8,7 @@ const readInput = document.querySelector("#read");
 const libraryContainer = document.querySelector(".library-container");
 const book = [];
 let targetBook = "";
-const readSpan = "";
+let readSpan = "";
 
 function Book(title, author, pages, read) {
   this.title = title;
@@ -50,9 +50,17 @@ function removeBook(e) {
   libraryContainer.removeChild(targetBook);
 }
 
-function readStatus(e) {
-  // document.querySelector(`span.${e.target.class}`)
-  console.log(e.target);
+function changeReadStatus(e) {
+  readSpan = document.querySelector(`#${e.target.id}.${e.target.classList[0]}`);
+  if (readSpan.classList[0] === "Unread") {
+    readSpan.classList.remove("Unread");
+    readSpan.classList.add("Read");
+    readSpan.innerHTML = "Read";
+  } else {
+    readSpan.classList.remove("Read");
+    readSpan.classList.add("Unread");
+    readSpan.innerHTML = "Unread";
+  }
 }
 
 let functionVar = "";
@@ -78,6 +86,9 @@ function updateDOM(newBook) {
   newBookVar.addEventListener("click", removeBook);
   functionVar.appendChild(newBookVar);
   libraryContainer.appendChild(functionVar);
+
+  readSpan = document.querySelector(`#${newBook.title}.${newBook.read}`);
+  readSpan.addEventListener("click", changeReadStatus);
 }
 
 function addBook() {

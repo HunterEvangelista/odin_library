@@ -95,14 +95,15 @@
     grid-template-rows: 2rem;
     grid-auto-rows: 2rem;
     row-gap: .25rem;
+    column-gap: .25rem;
 }
 
 .col-labels {
     display: grid;
     grid-template-columns: 3fr 2fr repeat(3, 1fr);
     font-size: 1.25rem;
-    border-top: 1px solid #f472b6;
-    border-bottom: 1px solid #f472b6;
+    border-top: 2px solid #f472b6;
+    border-bottom: 2px solid #f472b6;
     vertical-align: center;
     text-align: center;
 }
@@ -112,8 +113,13 @@
     grid-template-columns: 3fr 2fr repeat(3, 1fr);
     vertical-align: bottom;
     text-align: center;
-    /* margin: .25rem; */
     font-size: 1.25rem;
+    gap: .25rem;
+}
+
+.book {
+    border-bottom: 1px solid black;
+    padding-bottom: .1rem;
 }
 
 #remove {
@@ -124,4 +130,23 @@
     align-items: center;
     border-radius: .25rem;
     cursor: pointer;
+}
+
+.Read,
+.Unread {
+    cursor: pointer;
+    border-radius: .25rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.Read {
+    background-color: #155e75;
+    color: white;
+}
+
+.Unread {
+    background-color: #38bdf8;
+    color: white;
 }
