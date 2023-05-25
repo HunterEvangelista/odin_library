@@ -117,7 +117,7 @@
     gap: .25rem;
 }
 
-.book {
+.library-container > .book {
     border-bottom: 1px solid black;
     padding-bottom: .1rem;
 }
