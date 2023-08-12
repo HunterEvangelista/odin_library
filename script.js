@@ -68,7 +68,7 @@ class NewBookModal {
       this.addBookButton = document.querySelector(".add-book-button");
    }
 
-   resetInputsClass() {
+   resetInputs() {
       for (const key in this) {
          if (Object.prototype.hasOwnProperty.call(this, key)) {
             this.key.value = null;
@@ -81,6 +81,14 @@ class NewBookModal {
       if (target.class === "header" || target.class === "library-container" || target.parentElement === null || target.className === "add-book-button") {
          this.modal.classList.toggle("show");
          window.removeEventListener("click", this.closeModal);
+         this.resetInputs();
+      } else if (target.classList[1] === "Invalid") {
+         /* invalid class was used to stop a partially filled book
+          * I don't think we can use getters and setters to validate
+          * we can essentially have two functions:
+          * one that checks for all the values in the form to be filled
+          * an other that send the values of the form to library and then updates the dom
+          */
       }
    };
 
@@ -89,34 +97,33 @@ class NewBookModal {
       this.modal.classList.toggle("show");
       window.addEventListener("click", this.closeModal);
    };
-}
-// const DOM = () => {
-//    const domLibrary = document.querySelector(".library-container");
-//    const modal = new NewBookModal();
 
-//    const closeModal = (e) => {
-//       if (e.targer.className === "header" || e.target.className === "library-container" || e.target.parentElement === null || e.target.className === "add-book-button") {
-//          modal.modal.classList.toggle("show");
-//          window.removeEventListener("click", closeModal);
-//          // clear form
-//       }
-//    };
-//    const openModal = () => {
-//       modal.classList.toggle("show");
-//       window.addEventListener("click", closeModal);
-//    };
-// };
+   bookAttributes = () => [this.titleInput, this.authorInput, this.pageInput, this.readInput];
 
-function resetInputs() {
-   titleInput.value = null;
-   authorInput.value = null;
-   pageInput.value = null;
-   readInput.checked = false;
-   submitBookButton.classList.remove("invalid");
-   formInputs.forEach((input) => {
-      input.classList.remove("invalid");
-   });
+   checkAttributes = () => {
+      const attributes = this.bookAttributes();
+      let retBool = true;
+
+      for (let i = 0; i < attributes.length; i += 1) {
+         if (attributes[i].value === null) {
+            retBool = false;
+         }
+      }
+      return retBool;
+   };
 }
+
+// once the above method can handle partially filled books then this can be deleted
+// function resetInputs() {
+//    titleInput.value = null;
+//    authorInput.value = null;
+//    pageInput.value = null;
+//    readInput.checked = false;
+//    submitBookButton.classList.remove("invalid");
+//    formInputs.forEach((input) => {
+//       input.classList.remove("invalid");
+//    });
+// }
 
 function closeModal(e) {
    if (e.target.className === "header" || e.target.className === "library-container" || e.target.parentElement === null || e.target.className === "add-book-button") {
@@ -189,7 +196,7 @@ function updateDOM(newBook) {
 }
 
 function addBook() {
-   Library.library.push(new Book(titleInput.value, authorInput.value, pageInput.value, readInput.checked));
+   Library.library.push(new Book({}));
    currentBook = book[book.length - 1];
    if (currentBook.title === "" || currentBook.author === "" || currentBook.pages === "") {
       submitBookButton.classList.add("invalid");
@@ -201,3 +208,4 @@ function addBook() {
 const modal = new NewBookModal();
 addBookButton.addEventListener("click", modal.openModal);
 submitBookButton.addEventListener("click", addBook);
+console.log(modal.bookAttributes());
