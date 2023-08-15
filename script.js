@@ -5,7 +5,7 @@ class Book {
       this.title = title.value;
       this.author = author.value;
       this.pages = pages.value;
-      this.setRead(read);
+      this.read = read ? "Read" : "Unread";
    }
 
    get getRead() {
@@ -47,7 +47,7 @@ const Library = (() => {
 })();
 
 const Dom = (() => {
-   const openModalButton = document.querySelector("add-book");
+   const openModalButton = document.querySelector(".add-book");
    const libraryContainer = document.querySelector(".library-container");
 
    const removeBook = (e) => {
@@ -75,7 +75,7 @@ const Dom = (() => {
 
    const updateDOM = (newBook) => {
       const newBookDiv = document.createElement("div");
-      newBookDiv.setAttribute("id", `${Library.library.length() - 1}`);
+      newBookDiv.setAttribute("id", `${Library.library.length - 1}`);
       newBookDiv.setAttribute("class", "book");
       for (const key in Object.keys(newBook)) {
          if (Object.prototype.hasOwnProperty.call(newBook, key)) {
@@ -89,7 +89,7 @@ const Dom = (() => {
             newBookDiv.appendChild(divSection);
          }
       }
-      newBookDiv.appendChild(addRemoveBookbutton);
+      newBookDiv.appendChild(addRemoveBookbutton());
    };
 
    return {
@@ -108,15 +108,14 @@ class NewBookModal {
       this.addBookButton = document.querySelector(".add-book-button");
    }
 
-   resetInputs() {
-      for (const key in this) {
-         if (Object.prototype.hasOwnProperty.call(this, key)) {
-            this.key.value = null;
-         }
-      }
-   }
-
    bookAttributes = () => [this.titleInput, this.authorInput, this.pageInput, this.readInput];
+
+   resetInputs = () => {
+      const fields = this.bookAttributes();
+      for (let i = 0; i < fields.length; i += 1) {
+         fields[i].value = null;
+      }
+   };
 
    checkAttributes = () => {
       const attributes = this.bookAttributes();
@@ -153,9 +152,8 @@ class NewBookModal {
    };
 
    openModal = () => {
-      console.log(this.classList);
       this.modal.classList.toggle("show");
-      this.addBookButton("click", this.handleAddClick);
+      this.addBookButton.addEventListener("click", this.handleAddClick);
       window.addEventListener("click", this.closeModal);
    };
 }
