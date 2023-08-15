@@ -5,7 +5,7 @@ const addBookModal = document.querySelector(".new-book-modal");
 const submitBookButton = document.querySelector(".add-book-button");
 // const libraryContainer = document.querySelector(".library-container");
 const book = [];
-let targetBook = "";
+// let targetBook = "";
 let readSpan = "";
 let currentBook = "";
 
@@ -37,36 +37,6 @@ class Book {
    };
 }
 
-/* dom shelf can be a module that holds books and loops through each
- * this will connect the books to the dom
- * each row will have the same buttons
- */
-// function updateDOM(newBook) {
-//    functionVar = document.createElement("div");
-//    functionVar.setAttribute("id", `${newBook.title}`);
-//    functionVar.setAttribute("class", "book");
-//    newBookVar = "";
-//    // eslint-disable-next-line no-restricted-syntax
-//    for (const property in newBook) {
-//       if (Object.hasOwn(newBook, property)) {
-//          newBookVar = document.createElement("div");
-//          newBookVar.innerHTML = `${newBook[property]}`;
-//          newBookVar.setAttribute("id", `${newBook.title}`);
-//          newBookVar.setAttribute("class", `${newBook[property]}`);
-//          functionVar.appendChild(newBookVar);
-//       }
-//    }
-//    newBookVar = document.createElement("div");
-//    newBookVar.innerHTML = "Remove";
-//    newBookVar.setAttribute("id", "remove");
-//    newBookVar.addEventListener("click", removeBook);
-//    functionVar.appendChild(newBookVar);
-//    libraryContainer.appendChild(functionVar);
-
-//    readSpan = document.querySelector(`#${newBook.title}.${newBook.read}`);
-//    readSpan.addEventListener("click", changeReadStatus);
-// }
-
 const Library = (() => {
    const library = [];
 
@@ -79,6 +49,7 @@ const Library = (() => {
       // change the id of each div to its index in the library
       // change this to removeBook from library
       // add remove book from dom to the Dom module
+      library.splice(bookIndex, 1);
    };
 
    return {
@@ -89,36 +60,49 @@ const Library = (() => {
 })();
 
 const Dom = (() => {
-   // manage add new book button that opens modal
-   // iterate through library and add things to the dom
-   // add event listeners to remove and read status buttons
    const openModalButton = document.querySelector("add-book");
    const libraryContainer = document.querySelector(".library-container");
 
    const removeBook = (e) => {
-      // access row with the book
-      // remove it from the dom
-      // call Library.removeBook(target) to remove it from storage
+      const targetBook = document.querySelector(`div#${e.target.id}`);
+      libraryContainer.removeChild(targetBook);
+      Library.removeLibraryBook(e.target.id);
+   };
+
+   const addRemoveBookbutton = () => {
+      const removeBookButton = document.createElement("div");
+      removeBookButton.innerHTML = "Remove";
+      removeBookButton.setAttribute("id", "remove");
+      removeBookButton.addEventListener("click", removeBook);
+
+      return removeBookButton;
+   };
+
+   const handleReadStatusClick = (e) => {
+      const { target } = e.target;
+      const targetBook = Library.library[target.id];
+      const readElement = document.querySelector(`#${target.parentNode.id}`);
+      targetBook.changeRead();
+      readElement.innerHTML = `${targetBook.read}`;
    };
 
    const updateDOM = (newBook) => {
-      newBookDiv = document.createElement("div");
+      const newBookDiv = document.createElement("div");
       newBookDiv.setAttribute("id", `${Library.library.length() - 1}`);
       newBookDiv.setAttribute("class", "book");
-      for (const item in Object.keys(newBook)) {
-         if (Object.prototype.hasOwnProperty.call(newBook, item)) {
+      for (const key in Object.keys(newBook)) {
+         if (Object.prototype.hasOwnProperty.call(newBook, key)) {
             const divSection = document.createElement("div");
-
-            // newBookVar.innerHTML = `${newBook[property]}`;
-            //          newBookVar.setAttribute("id", `${newBook.title}`);
-            //          newBookVar.setAttribute("class", `${newBook[property]}`);
-            //          functionVar.appendChild(newBookVar);
-
-            divSection.innerHTML = `${newBook.item}`;
-            divSection.setAttribute("id", `${Library.library.length() - 1}`);
-            
+            divSection.innerHTML = `${newBook.key}`;
+            divSection.setAttribute("id", `${key}`);
+            divSection.setAttiribute("class", `${newBook.key}`);
+            if (key === "read") {
+               divSection.addEventListener("click", handleReadStatusClick);
+            }
+            newBookDiv.appendChild(divSection);
          }
       }
+      newBookDiv.appendChild(addRemoveBookbutton);
    };
 
    return {
