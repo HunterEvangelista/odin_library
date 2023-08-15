@@ -1,14 +1,5 @@
 /* eslint-disable no-restricted-syntax */
 /* eslint-disable max-classes-per-file */
-const addBookButton = document.querySelector(".add-book");
-const addBookModal = document.querySelector(".new-book-modal");
-const submitBookButton = document.querySelector(".add-book-button");
-// const libraryContainer = document.querySelector(".library-container");
-const book = [];
-// let targetBook = "";
-let readSpan = "";
-let currentBook = "";
-
 class Book {
    constructor(title, author, pages, read) {
       this.title = title.value;
@@ -45,10 +36,6 @@ const Library = (() => {
    };
 
    const removeLibraryBook = (bookIndex) => {
-      // stuff here
-      // change the id of each div to its index in the library
-      // change this to removeBook from library
-      // add remove book from dom to the Dom module
       library.splice(bookIndex, 1);
    };
 
@@ -107,6 +94,7 @@ const Dom = (() => {
 
    return {
       updateDOM,
+      openModalButton,
    };
 })();
 
@@ -167,91 +155,15 @@ class NewBookModal {
    openModal = () => {
       console.log(this.classList);
       this.modal.classList.toggle("show");
+      this.addBookButton("click", this.handleAddClick);
       window.addEventListener("click", this.closeModal);
    };
 }
-
-function closeModal(e) {
-   if (e.target.className === "header" || e.target.className === "library-container" || e.target.parentElement === null || e.target.className === "add-book-button") {
-      addBookModal.classList.toggle("show");
-      window.removeEventListener("click", closeModal);
-      resetInputs();
-   } else if (e.target.classList[1] === "invalid") {
-      // eslint-disable-next-line no-restricted-syntax
-      for (const [key, value] of Object.entries(currentBook)) {
-         if (value === "") {
-            // eslint-disable-next-line prefer-const
-            let wrongInputLocation = document.querySelector(`input#${key}`);
-            wrongInputLocation.classList.add("invalid");
-         }
-      }
-      book.pop();
-      submitBookButton.classList.remove("invalid");
-   }
+// need to instatiate the page
+// generate the modal and add event to add book button
+function main() {
+   const modal = new NewBookModal();
+   Dom.openModalButton.addEventListener("click", modal.openModal);
 }
 
-function openModal() {
-   addBookModal.classList.toggle("show");
-   window.addEventListener("click", closeModal);
-}
-
-function removeBook(e) {
-   targetBook = document.querySelector(`div.book#${e.target.parentNode.id}`);
-   libraryContainer.removeChild(targetBook);
-}
-
-function changeReadStatus(e) {
-   readSpan = document.querySelector(`#${e.target.id}.${e.target.classList[0]}`);
-   if (readSpan.classList[0] === "Unread") {
-      readSpan.classList.remove("Unread");
-      readSpan.classList.add("Read");
-      readSpan.innerHTML = "Read";
-   } else {
-      readSpan.classList.remove("Read");
-      readSpan.classList.add("Unread");
-      readSpan.innerHTML = "Unread";
-   }
-}
-
-let functionVar = "";
-let newBookVar = "";
-function updateDOM(newBook) {
-   functionVar = document.createElement("div");
-   functionVar.setAttribute("id", `${newBook.title}`);
-   functionVar.setAttribute("class", "book");
-   newBookVar = "";
-   // eslint-disable-next-line no-restricted-syntax
-   for (const property in newBook) {
-      if (Object.hasOwn(newBook, property)) {
-         newBookVar = document.createElement("div");
-         newBookVar.innerHTML = `${newBook[property]}`;
-         newBookVar.setAttribute("id", `${newBook.title}`);
-         newBookVar.setAttribute("class", `${newBook[property]}`);
-         functionVar.appendChild(newBookVar);
-      }
-   }
-   newBookVar = document.createElement("div");
-   newBookVar.innerHTML = "Remove";
-   newBookVar.setAttribute("id", "remove");
-   newBookVar.addEventListener("click", removeBook);
-   functionVar.appendChild(newBookVar);
-   libraryContainer.appendChild(functionVar);
-
-   readSpan = document.querySelector(`#${newBook.title}.${newBook.read}`);
-   readSpan.addEventListener("click", changeReadStatus);
-}
-
-function addBook() {
-   // Library.library.push(new Book(...));
-   currentBook = book[book.length - 1];
-   if (currentBook.title === "" || currentBook.author === "" || currentBook.pages === "") {
-      submitBookButton.classList.add("invalid");
-   } else {
-      updateDOM(currentBook);
-   }
-}
-
-const modal = new NewBookModal();
-addBookButton.addEventListener("click", modal.openModal);
-submitBookButton.addEventListener("click", addBook);
-console.log(Library.library);
+main();
