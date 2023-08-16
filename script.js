@@ -5,7 +5,7 @@ class Book {
       this.title = title.value;
       this.author = author.value;
       this.pages = pages.value;
-      this.read = read ? "Read" : "Unread";
+      this.read = read.checked ? "Read" : "Unread";
    }
 
    get getRead() {
@@ -77,13 +77,13 @@ const Dom = (() => {
       const newBookDiv = document.createElement("div");
       newBookDiv.setAttribute("id", `${Library.library.length - 1}`);
       newBookDiv.setAttribute("class", "book");
-      for (const key in Object.keys(newBook)) {
-         if (Object.prototype.hasOwnProperty.call(newBook, key)) {
+      for (const props in newBook) {
+         if (Object.prototype.hasOwnProperty.call(newBook, props) && props !== "changeRead") {
             const divSection = document.createElement("div");
-            divSection.innerHTML = `${newBook.key}`;
-            divSection.setAttribute("id", `${key}`);
-            divSection.setAttiribute("class", `${newBook.key}`);
-            if (key === "read") {
+            divSection.innerHTML = `${newBook.props}`;
+            divSection.setAttribute("id", `${props}`);
+            divSection.setAttribute("class", `${newBook.props}`);
+            if (props === "read") {
                divSection.addEventListener("click", handleReadStatusClick);
             }
             newBookDiv.appendChild(divSection);
@@ -120,9 +120,8 @@ class NewBookModal {
    checkAttributes = () => {
       const attributes = this.bookAttributes();
       let retBool = true;
-
       for (let i = 0; i < attributes.length; i += 1) {
-         if (attributes[i].value === null) {
+         if (attributes[i].value === "") {
             retBool = false;
          }
       }
@@ -134,7 +133,6 @@ class NewBookModal {
       if (target.class === "header" || target.class === "library-container" || target.parentElement === null || target.className === "add-book-button") {
          this.modal.classList.toggle("show");
          window.removeEventListener("click", this.closeModal);
-         this.resetInputs();
       }
    };
 
@@ -157,8 +155,7 @@ class NewBookModal {
       window.addEventListener("click", this.closeModal);
    };
 }
-// need to instatiate the page
-// generate the modal and add event to add book button
+
 function main() {
    const modal = new NewBookModal();
    Dom.openModalButton.addEventListener("click", modal.openModal);
