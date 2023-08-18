@@ -51,9 +51,9 @@ const Dom = (() => {
    const libraryContainer = document.querySelector(".library-container");
 
    const removeBook = (e) => {
-      const targetBook = document.querySelector(`div#${e.target.id}`);
+      const targetBook = document.querySelector(`#${e.target.parentNode.id}`);
       libraryContainer.removeChild(targetBook);
-      Library.removeLibraryBook(e.target.id);
+      Library.removeLibraryBook(e.target.classList[0]);
    };
 
    const addRemoveBookbutton = () => {
@@ -67,20 +67,22 @@ const Dom = (() => {
 
    const handleReadStatusClick = (e) => {
       const { target } = e.target;
-      const targetBook = Library.library[target.id];
+      console.log(`${target}`);
+      const targetBook = Library.library[target.parentNode.id];
       const readElement = document.querySelector(`#${target.parentNode.id}`);
       targetBook.changeRead();
       readElement.innerHTML = `${targetBook.read}`;
    };
 
-   // currently all info on page shows as undefined, the remove button does not work, and the read status style is not applied
+   // currently all info the remove button does not work, and the read status style is not applied
    const updateDOM = (newBook) => {
       const newBookDiv = document.createElement("div");
-      newBookDiv.setAttribute("id", `${Library.library.length - 1}`);
-      newBookDiv.setAttribute("class", "book");
+      newBookDiv.setAttribute("id", `${newBook.title}-${newBook.author}`);
+      newBookDiv.setAttribute("class", `${Library.library.length - 1}`);
       for (const props in newBook) {
          if (Object.prototype.hasOwnProperty.call(newBook, props) && props !== "changeRead") {
             const divSection = document.createElement("div");
+            console.log(props.valueOf());
             divSection.innerHTML = `${props.valueOf()}`;
             divSection.setAttribute("id", `${props}`);
             divSection.setAttribute("class", `${props.valueOf()}`);
