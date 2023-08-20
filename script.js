@@ -74,7 +74,7 @@ const Dom = (() => {
       readElement.innerHTML = `${targetBook.read}`;
    };
 
-   // currently all info the remove button does not work, and the read status style is not applied
+   // currently all info on page shows as undefined, the remove button does not work, and the read status style is not applied
    const updateDOM = (newBook) => {
       const newBookDiv = document.createElement("div");
       newBookDiv.setAttribute("id", `${newBook.title}-${newBook.author}`);
@@ -82,10 +82,9 @@ const Dom = (() => {
       for (const props in newBook) {
          if (Object.prototype.hasOwnProperty.call(newBook, props) && props !== "changeRead") {
             const divSection = document.createElement("div");
-            console.log(props.valueOf());
-            divSection.innerHTML = `${props.valueOf()}`;
+            divSection.innerHTML = `${newBook[props]}`;
             divSection.setAttribute("id", `${props}`);
-            divSection.setAttribute("class", `${props.valueOf()}`);
+            divSection.setAttribute("class", `${newBook[props]}`);
             if (props === "read") {
                divSection.addEventListener("click", handleReadStatusClick);
             }
