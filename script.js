@@ -20,11 +20,13 @@ class Book {
    }
 
    changeRead = () => {
-      if (this.getRead() === "Read") {
+      console.log(this);
+      if (this.getRead === "Read") {
          this.read = "Unread";
       } else {
          this.read = "Read";
       }
+      console.log(this);
    };
 }
 
@@ -66,15 +68,16 @@ const Dom = (() => {
    };
 
    const handleReadStatusClick = (e) => {
-      const { target } = e.target;
-      console.log(`${target}`);
-      const targetBook = Library.library[target.parentNode.id];
-      const readElement = document.querySelector(`#${target.parentNode.id}`);
+      const parentID = e.target.parentNode.id;
+      const targetBook = Library.library[e.target.parentNode.classList[0]];
+      const readElement = document.querySelector(`#${parentID}>#read`);
+      const newClass = readElement.classList[0] === "Read" ? "Unread" : "Read";
       targetBook.changeRead();
       readElement.innerHTML = `${targetBook.read}`;
+      readElement.removeAttribute("class");
+      readElement.classList.add(newClass);
    };
 
-   // currently all info on page shows as undefined, the remove button does not work, and the read status style is not applied
    const updateDOM = (newBook) => {
       const newBookDiv = document.createElement("div");
       newBookDiv.setAttribute("id", `${newBook.title}-${newBook.author}`);
@@ -93,6 +96,7 @@ const Dom = (() => {
       }
       newBookDiv.appendChild(addRemoveBookbutton());
       libraryContainer.appendChild(newBookDiv);
+      console.log(libraryContainer);
    };
 
    return {
@@ -139,6 +143,8 @@ class NewBookModal {
       }
    };
 
+   // currently errors out after the first book
+   // saying not all fields are complete
    handleAddClick = (e) => {
       if (this.checkAttributes()) {
          const newBook = new Book(...this.bookAttributes());
