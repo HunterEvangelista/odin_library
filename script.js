@@ -20,13 +20,11 @@ class Book {
    }
 
    changeRead = () => {
-      console.log(this);
       if (this.getRead === "Read") {
          this.read = "Unread";
       } else {
          this.read = "Read";
       }
-      console.log(this);
    };
 }
 
@@ -96,7 +94,6 @@ const Dom = (() => {
       }
       newBookDiv.appendChild(addRemoveBookbutton());
       libraryContainer.appendChild(newBookDiv);
-      console.log(libraryContainer);
    };
 
    return {
@@ -120,7 +117,11 @@ class NewBookModal {
    resetInputs = () => {
       const fields = this.bookAttributes();
       for (let i = 0; i < fields.length; i += 1) {
-         fields[i].value = null;
+         if (fields[i].id === "read") {
+            fields[i].checked = false;
+         } else {
+            fields[i].value = "";
+         }
       }
    };
 
