@@ -1,134 +1,174 @@
-const addBookButton = document.querySelector(".add-book");
-const addBookModal = document.querySelector(".new-book-modal");
-const submitBookButton = document.querySelector(".add-book-button");
-const titleInput = document.querySelector("#title");
-const authorInput = document.querySelector("#author");
-const pageInput = document.querySelector("#pages");
-const readInput = document.querySelector("#read");
-const libraryContainer = document.querySelector(".library-container");
-const formInputs = document.querySelectorAll("input");
-const book = [];
-let targetBook = "";
-let readSpan = "";
-let currentBook = "";
+/* eslint-disable no-restricted-syntax */
+/* eslint-disable max-classes-per-file */
+class Book {
+   constructor(title, author, pages, read) {
+      this.title = title.value;
+      this.author = author.value;
+      this.pages = pages.value;
+      this.read = read.checked ? "Read" : "Unread";
+   }
 
-function Book(title, author, pages, read) {
-  this.title = title;
-  this.author = author;
-  this.pages = pages;
-  if (read) {
-    this.read = "Read";
-  } else {
-    this.read = "Unread";
-  }
-}
+   get getRead() {
+      return this.read;
+   }
 
-function resetInputs() {
-  titleInput.value = null;
-  authorInput.value = null;
-  pageInput.value = null;
-  readInput.checked = false;
-  submitBookButton.classList.remove("invalid");
-  formInputs.forEach((input) => {
-    input.classList.remove("invalid");
-  });
-}
+   /**
+    * @param {(arg0: any) => void} read
+    */
+   set setRead(read) {
+      this.read = read.value ? "Read" : "Unread";
+   }
 
-function closeModal(e) {
-  if (
-    e.target.className === "header" ||
-    e.target.className === "library-container" ||
-    e.target.parentElement === null ||
-    e.target.className === "add-book-button"
-  ) {
-    addBookModal.classList.toggle("show");
-    window.removeEventListener("click", closeModal);
-    resetInputs();
-  } else if (e.target.classList[1] === "invalid") {
-    // eslint-disable-next-line no-restricted-syntax
-    for (const [key, value] of Object.entries(currentBook)) {
-      if (value === "") {
-        // eslint-disable-next-line prefer-const
-        let wrongInputLocation = document.querySelector(`input#${key}`);
-        wrongInputLocation.classList.add("invalid");
+   changeRead = () => {
+      if (this.getRead === "Read") {
+         this.read = "Unread";
+      } else {
+         this.read = "Read";
       }
-    }
-    book.pop();
-    submitBookButton.classList.remove("invalid");
-  }
+   };
 }
 
-function openModal() {
-  addBookModal.classList.toggle("show");
-  window.addEventListener("click", closeModal);
+const Library = (() => {
+   const library = [];
+
+   const updateLibrary = (newBook) => {
+      library.push(newBook);
+   };
+
+   const removeLibraryBook = (bookIndex) => {
+      library.splice(bookIndex, 1);
+   };
+
+   return {
+      library,
+      updateLibrary,
+      removeLibraryBook,
+   };
+})();
+
+const Dom = (() => {
+   const openModalButton = document.querySelector(".add-book");
+   const libraryContainer = document.querySelector(".library-container");
+
+   const removeBook = (e) => {
+      const targetBook = document.querySelector(`#${e.target.parentNode.id}`);
+      libraryContainer.removeChild(targetBook);
+      Library.removeLibraryBook(e.target.classList[0]);
+   };
+
+   const addRemoveBookbutton = () => {
+      const removeBookButton = document.createElement("div");
+      removeBookButton.innerHTML = "Remove";
+      removeBookButton.setAttribute("id", "remove");
+      removeBookButton.addEventListener("click", removeBook);
+
+      return removeBookButton;
+   };
+
+   const handleReadStatusClick = (e) => {
+      const parentID = e.target.parentNode.id;
+      const targetBook = Library.library[e.target.parentNode.classList[0]];
+      const readElement = document.querySelector(`#${parentID}>#read`);
+      const newClass = readElement.classList[0] === "Read" ? "Unread" : "Read";
+      targetBook.changeRead();
+      readElement.innerHTML = `${targetBook.read}`;
+      readElement.removeAttribute("class");
+      readElement.classList.add(newClass);
+   };
+
+   const updateDOM = (newBook) => {
+      const newBookDiv = document.createElement("div");
+      newBookDiv.setAttribute("id", `${newBook.title}-${newBook.author}`);
+      newBookDiv.setAttribute("class", `${Library.library.length - 1}`);
+      for (const props in newBook) {
+         if (Object.prototype.hasOwnProperty.call(newBook, props) && props !== "changeRead") {
+            const divSection = document.createElement("div");
+            divSection.innerHTML = `${newBook[props]}`;
+            divSection.setAttribute("id", `${props}`);
+            divSection.setAttribute("class", `${newBook[props]}`);
+            if (props === "read") {
+               divSection.addEventListener("click", handleReadStatusClick);
+            }
+            newBookDiv.appendChild(divSection);
+         }
+      }
+      newBookDiv.appendChild(addRemoveBookbutton());
+      libraryContainer.appendChild(newBookDiv);
+   };
+
+   return {
+      updateDOM,
+      openModalButton,
+   };
+})();
+
+class NewBookModal {
+   constructor() {
+      this.modal = document.querySelector(".new-book-modal");
+      this.titleInput = document.querySelector("#title");
+      this.authorInput = document.querySelector("#author");
+      this.pageInput = document.querySelector("#pages");
+      this.readInput = document.querySelector("#read");
+      this.addBookButton = document.querySelector(".add-book-button");
+   }
+
+   bookAttributes = () => [this.titleInput, this.authorInput, this.pageInput, this.readInput];
+
+   resetInputs = () => {
+      const fields = this.bookAttributes();
+      for (let i = 0; i < fields.length; i += 1) {
+         if (fields[i].id === "read") {
+            fields[i].checked = false;
+         } else {
+            fields[i].value = "";
+         }
+      }
+   };
+
+   checkAttributes = () => {
+      const attributes = this.bookAttributes();
+      let retBool = true;
+      for (let i = 0; i < attributes.length; i += 1) {
+         if (attributes[i].value === "") {
+            retBool = false;
+         }
+      }
+      return retBool;
+   };
+
+   closeModal = (e) => {
+      const { target } = e;
+      if (target.class === "header" || target.class === "library-container" || target.parentElement === null || target.className === "add-book-button") {
+         this.modal.classList.toggle("show");
+         window.removeEventListener("click", this.closeModal);
+      }
+   };
+
+   // currently errors out after the first book
+   // saying not all fields are complete
+   handleAddClick = (e) => {
+      if (this.checkAttributes()) {
+         const newBook = new Book(...this.bookAttributes());
+         Library.updateLibrary(newBook);
+         Dom.updateDOM(newBook);
+         this.resetInputs();
+         this.closeModal(e);
+      } else {
+         // could create a custom alert here
+         alert("Not all fields are completed.");
+      }
+   };
+
+   openModal = () => {
+      this.modal.classList.toggle("show");
+      this.addBookButton.addEventListener("click", this.handleAddClick);
+      window.addEventListener("click", this.closeModal);
+   };
 }
 
-function removeBook(e) {
-  targetBook = document.querySelector(`div.book#${e.target.parentNode.id}`);
-  libraryContainer.removeChild(targetBook);
+function main() {
+   const modal = new NewBookModal();
+   Dom.openModalButton.addEventListener("click", modal.openModal);
 }
 
-function changeReadStatus(e) {
-  readSpan = document.querySelector(`#${e.target.id}.${e.target.classList[0]}`);
-  if (readSpan.classList[0] === "Unread") {
-    readSpan.classList.remove("Unread");
-    readSpan.classList.add("Read");
-    readSpan.innerHTML = "Read";
-  } else {
-    readSpan.classList.remove("Read");
-    readSpan.classList.add("Unread");
-    readSpan.innerHTML = "Unread";
-  }
-}
-
-let functionVar = "";
-let newBookVar = "";
-function updateDOM(newBook) {
-  functionVar = document.createElement("div");
-  functionVar.setAttribute("id", `${newBook.title}`);
-  functionVar.setAttribute("class", "book");
-  newBookVar = "";
-  // eslint-disable-next-line no-restricted-syntax
-  for (const property in newBook) {
-    if (Object.hasOwn(newBook, property)) {
-      newBookVar = document.createElement("div");
-      newBookVar.innerHTML = `${newBook[property]}`;
-      newBookVar.setAttribute("id", `${newBook.title}`);
-      newBookVar.setAttribute("class", `${newBook[property]}`);
-      functionVar.appendChild(newBookVar);
-    }
-  }
-  newBookVar = document.createElement("div");
-  newBookVar.innerHTML = "Remove";
-  newBookVar.setAttribute("id", "remove");
-  newBookVar.addEventListener("click", removeBook);
-  functionVar.appendChild(newBookVar);
-  libraryContainer.appendChild(functionVar);
-
-  readSpan = document.querySelector(`#${newBook.title}.${newBook.read}`);
-  readSpan.addEventListener("click", changeReadStatus);
-}
-
-function addBook() {
-  book.push(
-    new Book(
-      titleInput.value,
-      authorInput.value,
-      pageInput.value,
-      readInput.checked
-    )
-  );
-  currentBook = book[book.length - 1];
-  if (
-    currentBook.title === "" ||
-    currentBook.author === "" ||
-    currentBook.pages === ""
-  ) {
-    submitBookButton.classList.add("invalid");
-  } else {
-    updateDOM(currentBook);
-  }
-}
-
-addBookButton.addEventListener("click", openModal);
-submitBookButton.addEventListener("click", addBook);
+main();
